@@ -1,0 +1,52 @@
+{% extends 'main.html' %}
+{% block content %}
+<!-- <h1>Project Form</h1> -->
+
+<!-- <form action = "" method = "POST" enctype="multipart/form-data"> -->
+    <!-- {% csrf_token %}    -->
+    <!-- To make sure our data wasn't manipulated -->
+    <!-- {{form}}  -->
+    <!-- {{form.as_p}}  -->
+    <!-- It will wrap paragraph tags around each field -->
+    <!-- To output the form -->
+    
+    <!-- <input type="submit" >   -->
+    <!-- Model form will be automatically created with this input button -->
+<!-- </form> -->
+
+    <!-- Main Section -->
+    <main class="formPage my-xl">
+        <div class="content-box">
+            <div class="formWrapper">
+                <a class="backButton" href="#"><i class="im im-angle-left"></i></a>
+                <br>
+
+                <form class="form" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}  
+
+                    {% for field in form %}
+                    <!-- Input:Text -->
+                    <div class="form__field">
+                        <label for="formInput#text">{{field.label}}</label>
+                        {{field}}
+                    </div>
+                    {% endfor %}
+                    <input class="btn btn--sub btn--lg  my-md" type="submit" value="Submit" />
+                </form>
+            </div>
+        </div>
+    </main>
+
+<!-- We will create a view for the form -->
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
