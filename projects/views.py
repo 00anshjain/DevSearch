@@ -51,20 +51,28 @@ def project(request, pk):
 
 @login_required(login_url="login")     #If they are not loggedin they will be redirected to login page
 def createProject(request):
+    profile = request.user.profile
     form = ProjectForm()
     if request.method == 'POST':
        # print(request.POST)  # So we see its a dictionary of attributes of project and its details
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('projects') #user will be redirected to the projects page
+            project = form.save(commit = False)
+            project.owner = profile
+            project.save()
+            return redirect('account')
+            # return redirect('projects') #user will be redirected to the projects page
     context = {'form':form}
     return render(request, "projects/project_form.html", context)
 
 
 @login_required(login_url="login")     #If they are not loggedin they will be redirected to login page
 def updateProject(request, pk):
-    project = Project.objects.get(id=pk)
+    profile = request.user.profile
+    project = profile.project_set.get(id=pk) #project_set will give all the project of the user
+    # It will ensure only owner can update the project
+    # project = Project.objects.get(id=pk)
+
     form = ProjectForm(instance = project) #  Form will get all details of the project object taken to update
     if request.method == 'POST':
         form = ProjectForm(request.POST, request.FILES, instance=project) #The request.POST data will be send to the project instance
@@ -77,9 +85,13 @@ def updateProject(request, pk):
 
 @login_required(login_url="login")     #If they are not loggedin they will be redirected to login page
 def deleteProject(request, pk):
-    project = Project.objects.get(id=pk)
+    profile = request.user.profile
+    project = profile.project_set.get(id = pk)
+    # Only a logged in user, An owner of project can delete it
+    # project = Project.objects.get(id=pk)
     if request.method == 'POST':
         project.delete()
         return redirect('projects')
     context = {'object':project}
-    return render(request, 'projects/delete_template.html', context)
+    return render(request, 'delete_template.html', context)
+    # delete_template.html is in templates outside project app. 
