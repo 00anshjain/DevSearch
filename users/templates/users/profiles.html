@@ -12,11 +12,16 @@
         </div>
 
         <div class="hero-section__search">
-          <form class="form" action="#" method="get">
+
+          <form id='searchForm' class="form" action="{% url 'profiles' %}" method="get">
+            <!-- method = get because we want to get data from database -->
             <div class="form__field">
               <label for="formInput#search">Search Developers </label>
-              <input class="input input--text" id="formInput#search" type="text" name="text"
-                placeholder="Search by developer name" />
+              <input class="input input--text" id="formInput#search" type="text" name="search_query"
+                value = "{{search_query}}" placeholder="Search by developer name" />
+                <!-- name is we are sending to backend -->
+                <!--  It will we a simple query, wew are not sending any post data to backend -->
+                <!--  We can either leave action black or send it ot the profiles page -->
             </div>
 
             <input class="btn btn--sub btn--lg" type="submit" value="Search" />
@@ -62,6 +67,9 @@
     </section>
 
   </main>
+
+  {% include 'pagination.html' with queryset=profiles custom_range=custom_range %}
+    <!-- We pass in props like key value pair, queryset has value projects -->
 
 
 {% endblock content %}

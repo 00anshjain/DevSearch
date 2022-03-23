@@ -4,8 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 # from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile
+from django.db.models import Q
+from .models import Profile, Skill
 from .forms import CustomUserCreationForm, ProfileForm, SkillForm
+from .utils import searchProfiles, paginateProfiles
 
 # Create your views here.
 
@@ -74,8 +76,14 @@ def registerUser(request):
 
 
 def profiles(request):
-    profile = Profile.objects.all()
-    context = {'profiles': profile}
+    
+    profiles, search_query = searchProfiles(request)
+
+    custom_range, profiles = paginateProfiles(request, profiles, 3)
+
+    context = {'profiles': profiles, 'search_query' : search_query, 'custom_range':custom_range}
+    # We pass search query as when we search anything, we want it to show in the space provided
+    # Otherwise it will disappear
     return render(request, 'users/profiles.html', context)
 
 def userProfile(request, pk):

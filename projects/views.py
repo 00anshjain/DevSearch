@@ -1,9 +1,15 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from .models import Project
+
+# from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+# from django.db.models import Q
+# We dont need this here anymore, we import it in projects/utils.py file 
+from .models import Project, Tag
 from .forms import ProjectForm
 
+from .utils import searchProjects, paginateProjects
 
 # projectsList = [
 #     {
@@ -30,9 +36,20 @@ def projects(request):
     # page = 'projects'
     # number = 10
     # context = {'page': page, 'number':number, 'projects':projectsList}
-    projects = Project.objects.all() #TO get all data from database of projects
-    context = {'projects':projects}
+    # projects = Project.objects.all() #TO get all data from database of projects
+    
+    projects, search_query = searchProjects(request)
+    # This searchProjects function is in projects/utils.py file
+    
+    # We want to set the paginator class for the results
+    custom_range, projects = paginateProjects(request, projects, 6)
+    # 6 results each time 
+
+
+
+    context = {'projects':projects, 'search_query':search_query, 'custom_range':custom_range}
     return render(request, 'projects/projects.html', context)
+    # 'paginator':paginator, 
     # return render(request, 'projects/projects.html', {'page':page})
     # name for parameter is page
 

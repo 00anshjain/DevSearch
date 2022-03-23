@@ -26,6 +26,14 @@ class Project(models.Model):
         return self.title
     #So that we can see title of project in table
 
+    class Meta:
+        ordering = ['created']
+        # ordering = ['-created']
+    # TO order project by date created
+    # - created for order by created latest should show first
+    # if no - sign, then its order by created first will be shown first 
+  
+
 
 
 class Review(models.Model):
