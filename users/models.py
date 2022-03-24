@@ -41,6 +41,31 @@ class Skill(models.Model):
     def __str__(self):
         return str(self.name)
 
+class Message(models.Model):
+    sender = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
+    # null = true, users which dont have account can also send messages
+    recipient = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True, related_name='messages')
+    # We need to do something a little different for the reciepeint because connection to profile is going to interfere with sender
+    # SO we set related_name = "messages", so when we go to profile, to access the profile messages, instead of doing something like
+    # profile_messages_set , we cn just type in messages. This is how profile model isgoing to connect to this
+    # If we dont do this, it will nlt allow us have connection to profile model twice, we need to add in related_name
+
+    name = models.CharField(max_length=200, null=True, blank=True)
+    email = models.EmailField(max_length=200, null=True, blank=True)
+    subject = models.CharField(max_length=200, blank=True, null=True)
+    body = models.TextField()
+    is_read = models.BooleanField(default=False, null=True)
+    # We want the unread messages to be seen first
+    created = models.DateTimeField(auto_now_add = True)
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key = True, editable = False)
+    
+    def __str__(self):
+        return self.subject
+
+    class Meta:
+        ordering = ['is_read', '-created']
+    # We want all the not read messages to be at top, then newly created msg at top
+
 # @receiver(post_save, sender=Profile)
 # def createProfile(sender, instance, created, **kwargs):
 #     print('Profile Saved!')
