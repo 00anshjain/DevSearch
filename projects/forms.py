@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from .models import Project
+from .models import Project, Review
 
 class ProjectForm(ModelForm): #This now makes it model form
     # We will import it form the inherited Model Form
@@ -30,3 +30,20 @@ class ProjectForm(ModelForm): #This now makes it model form
         # self.fields['description'].widget.attrs.update({'class':'input'})
 
 
+
+class ReviewForm(ModelForm):
+    class Meta:
+        model = Review
+        fields = ['value', 'body']
+        # Value of vote, and actual body of review
+
+        labels = {
+            'value':'Place your vote',
+            'body':'Add a comment with your vote'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ReviewForm, self).__init__(*args, **kwargs)
+
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class':'input'})

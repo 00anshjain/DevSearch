@@ -19,7 +19,7 @@ def loginUser(request):
 
     if request.method=='POST': 
         # print(request.POST)
-        username = request.POST['username']
+        username = request.POST['username'].lower()
         password = request.POST['password']
 
         # when user enters these we want to check data if something goes wrong
@@ -34,7 +34,9 @@ def loginUser(request):
         if user is not None:
             login(request, user)
             # print('login successful')
-            return redirect('profiles')
+            # return redirect('profiles')
+            return redirect(request.GET['next'] if 'next' in request.GET else 'account')
+            # Send the user to the next route, next route that we pass in
         else:
             messages.error(request, 'Username OR password is incorrect')
 
